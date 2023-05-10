@@ -1,14 +1,37 @@
-// import { config } from "dotenv";
-// config();
+import { config } from "dotenv";
+config();
 import express from "express";
+import cors from "cors";
+
+import { client } from "./config/connectDB.js";
 import { menu } from "./routes/menu.js";
 const app = express();
-// const PORT = process.env.PORT;
-app.use(express.json());
-app.use("/api/v1/menu", menu)
+const PORT = process.env.PORT;
 
-app.listen("8080", () => {
-    console.log(
-        `Sever is running on port 8080`
-    )
-})
+
+async function main() {
+    try{
+        // connect to mongodb
+        await client.connect()
+        console.log("Connected to mongodb successfully");
+
+        // set up middlewares
+        app.use(express.json());
+        app.use(cors());
+        app.use(express.urlencoded({ extended: true }));
+        app.use(express.static("public"));
+        app.use("/api/v1/menu", menu)
+
+        // run server
+        app.listen(PORT, () => {
+            console.log(
+                `Sever is running on port ${PORT}`
+            )
+        })
+    } catch (error) {
+        console.log("connect failed")
+    }
+}
+
+
+main()
