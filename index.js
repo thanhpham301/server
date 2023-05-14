@@ -5,6 +5,7 @@ import cors from "cors";
 
 import { client } from "./config/connectDB.js";
 import { menu } from "./routes/menu.js";
+import { ordered } from "./routes/orders.js";
 const app = express();
 const PORT = process.env.PORT;
 
@@ -21,6 +22,7 @@ async function main() {
         app.use(express.urlencoded({ extended: true }));
         app.use(express.static("public"));
         app.use("/api/v1/menu", menu)
+        app.use("/api/v1/ordered", ordered)
 
         // run server
         app.listen(PORT, () => {
