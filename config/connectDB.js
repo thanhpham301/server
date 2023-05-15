@@ -8,3 +8,5 @@ export const menuDB = client.db("order-app").collection("menu");
 export const orderedDB = client.db("order-app").collection("orders");
 
 export const userCollection = client.db("order-app").collection("user");
+
+export const orderedDB = client.db("order-app").collection("orders");

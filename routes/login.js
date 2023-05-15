@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { userCollection } from "../config/connectDB.js";
-import authMiddleware from "../middlewares/authmiddle.js"
+import authMiddleware from "../middlewares/authmiddle.js";
 
 const loginRouter = express.Router();
 
@@ -11,14 +11,14 @@ loginRouter.post("/", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userCollection.findOne({ email });
-
+    console.log(password);
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid password" });
     }
 
     // Create token
@@ -32,7 +32,7 @@ loginRouter.post("/", async (req, res) => {
       maxAge: 60 * 60 * 1000, // 1 hour
     });
 
-    res.status(200).json({ message: "Login success", jwt: token });
+    res.status(200).json({ message: "Login success", user: user, jwt: token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
