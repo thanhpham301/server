@@ -6,6 +6,7 @@ import cors from "cors";
 import { client } from "./config/connectDB.js";
 import { menu } from "./routes/menu.js";
 import { ordered } from "./routes/orders.js";
+import { getOrders } from "./routes/getorders.js";
 const app = express();
 const PORT = process.env.PORT;
 
@@ -23,7 +24,7 @@ async function main() {
         app.use(express.static("public"));
         app.use("/api/v1/menu", menu)
         app.use("/api/v1/ordered", ordered)
-
+        app.use("/api/v1/admin", getOrders)
         // run server
         app.listen(PORT, () => {
             console.log(
