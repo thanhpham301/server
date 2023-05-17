@@ -3,6 +3,8 @@ config();
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { Server } from "socket.io";
+import http from "http";
 
 import { client } from "./config/connectDB.js";
 import { menu } from "./routes/menu.js";
@@ -13,6 +15,13 @@ import loginRouter from "./routes/login.js";
 import registerRouter from "./routes/register.js";
 const app = express();
 const PORT = process.env.PORT;
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
 
 async function main() {
   try {
@@ -33,8 +42,23 @@ async function main() {
     app.use("/api/v1/login", loginRouter);
     app.use("/api/v1/register", registerRouter);
 
+    io.on("connection", (socket) => {
+      console.log("A user connected");
+
+      socket.on("newOrder", (order) => {
+        console.log("newOrder", order);
+        io.emit("orders", order);
+        // orders.push(order);
+        // io.emit("orders", orders);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("A user disconnected");
+      });
+    });
+
     // run server
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Sever is running on port ${PORT}`);
     });
   } catch (error) {

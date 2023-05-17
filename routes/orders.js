@@ -5,7 +5,6 @@ export const ordered = express.Router();
 ordered.post("/", async (req, res) => {
   try {
     const items = req.body;
-    console.log(items);
     let ordered;
     if (Array.isArray(items)) {
       ordered = await orderedDB.insertMany(items);
